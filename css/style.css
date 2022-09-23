@@ -1,5 +1,10 @@
 @import url("photographer.css");
 @import url("photographer-section.css");
+@import url("contact-modal.css");
+@import url("filter.css");
+@import url("cards.css");
+@import url("contact-modal.css");
+@import url("lightbox-modal.css");
 
 body {
     font-family: "DM Sans", sans-serif;
@@ -27,7 +32,10 @@ h1 {
 
 .center {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.column {
+    flex-direction: column;
 }

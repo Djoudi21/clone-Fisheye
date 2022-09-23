@@ -1,0 +1,22 @@
+#lightbox_modal {
+    display: none;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.modal header {
+    justify-content: space-between;
+    width: 100%;
+}
+
+.modal header img {
+    cursor: pointer;
+}
+
+.modal header h2 {
+    font-size: 64px;
+    font-weight: normal;
+    text-align: center;
+}

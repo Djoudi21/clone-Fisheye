@@ -1,13 +1,15 @@
 function photographerFactory(data) {
-    const { name, portrait, city, country, tagline, price } = data;
-console.log('DATa', data)
+    const { name, portrait, city, country, tagline, price, id } = data;
     const picture = `assets/photographers/${portrait}`;
 
     function getUserCardDOM() {
         const article = document.createElement( 'article' );
+        const a = document.createElement( 'a' );
+        a.href = `./photographers/${id}.html`;
         const sectionContent = document.createElement('div')
         const sectionInfos = document.createElement('div')
         sectionInfos.classList.add('center')
+        sectionInfos.classList.add('column')
         const img = document.createElement( 'img' );
         img.setAttribute("src", picture)
         const h2 = document.createElement( 'h2' );
@@ -24,8 +26,9 @@ console.log('DATa', data)
         sectionInfos.appendChild(location)
         sectionInfos.appendChild(tagLine)
         sectionInfos.appendChild(rate)
-        article.appendChild(sectionContent)
-        article.appendChild(sectionInfos)
+        a.appendChild(sectionContent)
+        a.appendChild(sectionInfos)
+        article.appendChild(a)
         return (article);
     }
     return { name, picture, city, country, getUserCardDOM }

@@ -11,7 +11,6 @@ const photographersArray =  photographersJSON.photographers
 
         photographers.forEach((photographer) => {
             const photographerModel = photographerFactory(photographer);
-            console.log('toto', photographerModel)
             const userCardDOM = photographerModel.getUserCardDOM();
             photographersSection.appendChild(userCardDOM);
         });
@@ -20,8 +19,8 @@ const photographersArray =  photographersJSON.photographers
     async function init() {
         // Récupère les datas des photographes
         const { photographers } = await getPhotographers();
-        displayData(photographers);
+        await displayData(photographers);
     };
 
-    init();
+    await init();
     
