@@ -5,6 +5,7 @@
 @import url("cards.css");
 @import url("contact-modal.css");
 @import url("lightbox-modal.css");
+@import url("likes-counter.css");
 
 body {
     font-family: "DM Sans", sans-serif;

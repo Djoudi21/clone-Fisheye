@@ -1,4 +1,4 @@
-function mediaFactory(data, name) {
+export function mediaFactory(data, name) {
     const { image, title, likes } = data;
     const picture = `.././assets/images/${image}`;
     function getMediaCardDOM() {
@@ -31,23 +31,21 @@ function mediaFactory(data, name) {
 
         // FAV SETTING
         const favNumber = document.createElement( 'span' );
+        favNumber.classList.add('fav-number')
+        const favIcon = document.createElement( 'span' );
         favNumber.innerText = likes
-
-
-
-        // // FAV SETTING
-        // const favIcon = document.createElement( 'div' );
-        // fav.classList.add('fav')
+        favIcon.innerHTML = '<span class="mdi mdi-heart" aria-hidden="true">toto</span>';
 
 
         footer.appendChild(label)
         footer.appendChild(fav)
         fav.appendChild(favNumber)
+        fav.appendChild(favIcon)
         article.appendChild(image)
         article.appendChild(footer)
         return (article);
     }
 
 
-    return { getMediaCardDOM }
+    return { likes, getMediaCardDOM }
 }

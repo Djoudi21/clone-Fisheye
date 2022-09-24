@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="../assets/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css">
     <title>Fisheye - photographe </title>
 </head>
 <body>
@@ -29,8 +30,8 @@
     <section class="filter">
         <label for="filters">Trier par</label>
         <select id="filters">
-            <option value="volvo">Popularité</option>
-            <option value="opel">Titre</option>
+            <option value="likes">Popularité</option>
+            <option value="title">Titre</option>
         </select>
     </section>
     <section class="cards">
@@ -58,9 +59,17 @@
     </div>
 </div>
 <div id="lightbox_modal"></div>
+<div id="likes-counter">
+    <div class="counter">
+        <div class="count"></div>
+        <div class="icon-counter"></div>
+    </div>
+    <div class="rate-counter"></div>
+</div>
 <script src="../scripts/factories/photographer.js"></script>
-<script src="../scripts/factories/media.js"></script>
+<script type="module" src="../scripts/factories/media.js"></script>
 <script type="module" src="../scripts/pages/photographer.js"></script>
 <script src="/scripts/utils/contactForm.js"></script>
+
 </body>
 </html>

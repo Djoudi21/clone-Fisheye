@@ -1,0 +1,13 @@
+#likes-counter {
+background-color: #DB8876;
+    display: flex;
+    justify-content: space-around;
+    width: 200px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
+
+.counter {
+    display: flex;
+}
