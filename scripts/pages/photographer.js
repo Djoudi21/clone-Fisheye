@@ -1,27 +1,22 @@
-import photographersJSON from '../../data/photographers.json' assert {type: 'json'}
-import mediaJSON from '../../data/photographers.json' assert {type: 'json'}
 import {mediaFactory} from '../factories/media.js'
-const photographersArray =  photographersJSON.photographers
-const mediaArray =  mediaJSON.media
-
-const path = window.location.pathname;
-const page = path.split("/").pop();
-const idStringed = page.replace('.html', '').trim()
-const idNumbered = convertToString(idStringed)
-const photographersArrayFiltered = photographersArray.filter(el => el.id === idNumbered)
-const mediaFiltered = mediaArray.filter(el => el.photographerId === idNumbered)
-const photographer = photographersArrayFiltered[0]
+let mediaFiltered
+let photographer
 let cardTitle
 let currentIndex
 let dynamicLikes
 let total = 0
 
-
 async function getMedias() {
-    return ({ medias: mediaFiltered})
+    return fetch('../../data/photographers.json').then(response => {
+        return response.json()
+    }).then( data => {
+        return data
+    }).catch(error => {
+        console.log('error', error)
+    })
 }
 
-function insertHeaderData() {
+function insertHeaderData(photographer) {
     const nameEl = document.querySelector('.name')
     const taglineEl = document.querySelector('.tagline')
     const location = document.querySelector('.location')
@@ -30,17 +25,43 @@ function insertHeaderData() {
     location.innerText = `${photographer.city}/${photographer.country}`
     nameEl.innerText = photographer.name
     taglineEl.innerText = photographer.tagline
-
 }
 
 async function displayMedias(medias) {
     const photographersCardsSection = document.querySelector(".cards");
-    medias.forEach((media) => {
-        const mediaModel = mediaFactory(media);
-        const card = mediaModel.getMediaCardDOM();
-        photographersCardsSection.appendChild(card);
-    });
+    const [...options] = document.querySelector('#filters').options
+    options.map(o => {
+        if(o.value === 'likes' && o.selected === true) {
+            const likesAscendingMedias = medias.sort((a, b) => parseFloat(b.likes) - parseFloat(a.likes))
+            likesAscendingMedias.forEach((media) => {
+                const mediaModel = mediaFactory(media);
+                const card = mediaModel.getMediaCardDOM();
+                photographersCardsSection.appendChild(card);
+            });
+            handleLightboxListener()
+        } else if (o.value === 'title' && o.selected === true) {
+            const titleAscendingMedia = medias.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))
+            titleAscendingMedia.forEach((media) => {
+                const mediaModel = mediaFactory(media);
+                const card = mediaModel.getMediaCardDOM();
+                photographersCardsSection.appendChild(card);
+            });
+            handleLightboxListener()
+        }
+    })
+}
 
+
+// HANDLE SELECT LISTENENER
+const select = document.querySelector('#filters')
+select.addEventListener('change', async function () {
+    const photographersCardsSection = document.querySelector(".cards");
+    photographersCardsSection.innerHTML = ''
+    await displayMedias(mediaFiltered)
+})
+
+
+function handleLightboxListener() {
     const mediaToCLick = document.querySelectorAll('.card')
     mediaToCLick.forEach(el => {
         const img = el.querySelector('.card-img')
@@ -63,11 +84,24 @@ async function displayMedias(medias) {
     })
 }
 
-async function insertCounterData() {
+function getPhotographer(media, photographers) {
+    const path = window.location.pathname;
+    const page = path.split("/").pop();
+    const idStringed = page.replace('.html', '').trim()
+    const idNumbered = convertToString(idStringed)
+    const photographersArrayFiltered = photographers.filter(el => el.id === idNumbered)
+    const mediaFiltered = media.filter(el => el.photographerId === idNumbered)
+    const photographer = photographersArrayFiltered[0]
+    return {
+        mediaFiltered,
+        photographer
+    }
+}
+async function insertCounterData(medias, photographer) {
     const count = document.querySelector('.count')
     const icon = document.querySelector('.icon-counter')
     const rate = document.querySelector('.rate-counter')
-    mediaFiltered.forEach(media => {
+    medias.forEach(media => {
         total = total+= media.likes
     })
     rate.innerText = `${photographer.price}$ / jour`
@@ -76,15 +110,18 @@ async function insertCounterData() {
 }
 
 async function init() {
-    insertHeaderData()
-    const { medias } = await getMedias();
-    await displayMedias(medias);
-    await insertCounterData()
-    await sortMedias()
+    const { media, photographers } = await getMedias();
+    mediaFiltered = getPhotographer(media, photographers).mediaFiltered
+    photographer = getPhotographer(media, photographers).photographer
+    insertHeaderData(photographer)
+    await displayMedias(mediaFiltered);
+    await insertCounterData(mediaFiltered, photographer)
 }
 
 await init();
 
+
+// LIGHTBIX FUCNTIONS
 function setTotalLikes() {
     total += 1
     const count = document.querySelector('.count')
@@ -163,23 +200,8 @@ function closeModal() {
     modal.style.display = "none";
 }
 
+
+// UTILS
 function convertToString(str) {
     return parseInt(str, 10)
-}
-
-async function sortMedias() {
-    // TODO: sort array
-    const { medias } = await getMedias();
-    console.log('media', medias)
-    medias.sort()
-    const select = document.getElementById('filters')
-    select.addEventListener('change', async function (){
-        // console.log('select', select.options[0].selected)
-        if(select.options[0].selected){
-            console.log('toto')
-        } else {
-            console.log('tutu')
-            await displayMedias(medias)
-        }
-    })
 }

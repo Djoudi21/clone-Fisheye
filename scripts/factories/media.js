@@ -31,10 +31,18 @@ export function mediaFactory(data, name) {
 
         // FAV SETTING
         const favNumber = document.createElement( 'span' );
-        favNumber.classList.add('fav-number')
         const favIcon = document.createElement( 'span' );
+        favNumber.classList.add('fav-number')
         favNumber.innerText = likes
-        favIcon.innerHTML = '<span class="mdi mdi-heart" aria-hidden="true">toto</span>';
+        favIcon.innerText = 'toto'
+        favIcon.classList.add('mdi')
+        favIcon.classList.add('mdi-heart')
+
+
+
+        // // FAV SETTING
+        // const favIcon = document.createElement( 'div' );
+        // fav.classList.add('fav')
 
 
         footer.appendChild(label)
@@ -47,5 +55,5 @@ export function mediaFactory(data, name) {
     }
 
 
-    return { likes, getMediaCardDOM }
+    return { getMediaCardDOM }
 }

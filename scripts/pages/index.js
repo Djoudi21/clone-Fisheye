@@ -1,26 +1,30 @@
-import photographersJSON from '../../data/photographers.json' assert {type: 'json'}
+async function getPhotographers() {
+    return fetch('../../data/photographers.json').then(response => {
+        return response.json()
+    }).then( data => {
+       return data
+    }).catch(error => {
+        console.log('error', error)
+    })
+}
 
-const photographersArray =  photographersJSON.photographers
-    async function getPhotographers() {
-        return ({
-            photographers: [...(photographersArray)]})
-    }
+async function displayData(photographers) {
+    const photographersSection = document.querySelector(".photographer_section");
 
-    async function displayData(photographers) {
-        const photographersSection = document.querySelector(".photographer_section");
+    photographers.forEach((photographer) => {
+        const photographerModel = photographerFactory(photographer);
+        const userCardDOM = photographerModel.getUserCardDOM();
+        photographersSection.appendChild(userCardDOM);
+    });
+}
 
-        photographers.forEach((photographer) => {
-            const photographerModel = photographerFactory(photographer);
-            const userCardDOM = photographerModel.getUserCardDOM();
-            photographersSection.appendChild(userCardDOM);
-        });
-    };
+async function init() {
+    // Récupère les datas des photographes
+    const { photographers } = await getPhotographers();
 
-    async function init() {
-        // Récupère les datas des photographes
-        const { photographers } = await getPhotographers();
-        await displayData(photographers);
-    };
+    // Affiche les datas des photographes
+    await displayData(photographers);
+}
 
-    await init();
+await init();
     
