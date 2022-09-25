@@ -8,6 +8,8 @@ function photographerFactory(data) {
         a.href = `./photographers/${id}.html`;
         const sectionContent = document.createElement('div')
         const sectionInfos = document.createElement('div')
+        sectionContent.classList.add('photographer-img-container')
+        console.log('section', sectionContent)
         sectionInfos.classList.add('center')
         sectionInfos.classList.add('column')
         const img = document.createElement( 'img' );
@@ -17,6 +19,7 @@ function photographerFactory(data) {
         h2.textContent = name;
         const location = document.createElement('span')
         location.innerText = `${city}/${country}`
+        location.classList.add('location')
         const tagLine = document.createElement('span')
         tagLine.innerText = tagline
         const rate = document.createElement('span')

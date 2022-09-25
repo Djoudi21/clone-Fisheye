@@ -1,9 +1,51 @@
 #lightbox_modal {
     display: none;
     background-color: white;
+}
+
+.lightbox_modal {
+    background-color: red;
     position: fixed;
     top: 0;
     left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+.lightbox-container {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+    border: 2px solid red;
+}
+
+.card-img-lightbox {
+    width: 50vw;
+    position: absolute;
+    top: 25%;
+    left: 25%;
+}
+
+
+.next {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+}
+
+.previous {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+}
+
+.close {
+    position: absolute;
+    top: 10%;
+    right: 10%;
 }
 
 .modal header {

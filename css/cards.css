@@ -2,24 +2,50 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    gap: 70px;
+    gap: 100px;
     margin: 20px 100px;
 }
 
 .card {
-    width: 80%;
-    height: 100%;
-    border: 2px solid red;
+    width: 100%;
+    height: 300px;
 }
 
 .card-footer {
     display: flex;
     justify-content: space-between;
-    border: 2px solid blue;
-
+    margin: 5px 0;
 }
 
 .card-img {
-    width: 90%;
-    border: 2px solid green;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.card-title {
+    width: 292px;
+    height: 31px;
+    font-family: DM Sans;
+    font-weight: 400;
+    font-size: 24px;
+    line-height:  31.25px;
+    color: #901C1C;
+}
+
+.fav-number {
+    width: 22px;
+    height: 31px;
+    font-family: DM Sans;
+    font-weight: 500;
+    font-size: 24px;
+    line-height:  31.25px;
+    color: #901C1C;
+}
+
+.mdi-heart {
+    width: 17.5px;
+    height: 18.35px;
+    color: #901C1C;
 }

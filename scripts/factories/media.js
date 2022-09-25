@@ -55,5 +55,5 @@ export function mediaFactory(data, name) {
     }
 
 
-    return { getMediaCardDOM }
+    return { likes, getMediaCardDOM }
 }
