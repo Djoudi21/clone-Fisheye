@@ -40,6 +40,11 @@ h1 {
     align-items: center;
 }
 
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
 .column {
     flex-direction: column;
 }

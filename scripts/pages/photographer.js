@@ -1,4 +1,5 @@
 import {mediaFactory} from '../factories/media.js'
+
 let mediaFiltered
 let photographer
 let cardTitle
@@ -6,8 +7,9 @@ let currentIndex
 let dynamicLikes
 let total = 0
 let initialLikes
-
-
+let newModalContainer
+let source
+let mediaModel
 
 async function getMedias() {
     return fetch('../../data/photographers.json').then(response => {
@@ -23,32 +25,45 @@ function insertHeaderData(photographer) {
     const nameEl = document.querySelector('.name')
     const taglineEl = document.querySelector('.tagline')
     const location = document.querySelector('.location')
-    // const cardImg = document.querySelector('.card-img')
-    // cardImg.src = photographer
+    const cardImg = document.querySelector('.photographer-img')
+    cardImg.src = `./assets/photographers/${photographer.portrait}`
     location.innerText = `${photographer.city}/${photographer.country}`
     nameEl.innerText = photographer.name
     taglineEl.innerText = photographer.tagline
 }
 
-async function displayMedias(medias) {
+async function displayData(medias) {
+    // Récupération de la section pour afficher les cards
     const photographersCardsSection = document.querySelector(".cards");
+
+    // Récupération des options du select ayant pour id filters
     const [...options] = document.querySelector('#filters').options
+
+    //Itération sur ces options afin des trier les cards
     options.map(o => {
         if(o.value === 'likes' && o.selected === true) {
-            const likesAscendingMedias = medias.sort((a, b) => parseFloat(b.likes) - parseFloat(a.likes))
-            likesAscendingMedias.forEach((media) => {
-                const mediaModel = mediaFactory(media);
+            //Tri par nombre de likes de façon ascending
+            const likesSortedMedias = medias.sort((a, b) => parseFloat(b.likes) - parseFloat(a.likes))
+
+            //Creation de la card et injection
+            likesSortedMedias.forEach((media) => {
+                mediaModel = mediaFactory(media);
                 const card = mediaModel.getMediaCardDOM();
                 photographersCardsSection.appendChild(card);
             });
+
+            //Fonction permettant d'ajouter un listener sur les medias
             handleLightboxListener()
         } else if (o.value === 'title' && o.selected === true) {
+            //Tri par titre de façon ascending
             const titleAscendingMedia = medias.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))
             titleAscendingMedia.forEach((media) => {
                 const mediaModel = mediaFactory(media);
                 const card = mediaModel.getMediaCardDOM();
                 photographersCardsSection.appendChild(card);
             });
+
+            //Fonction permettant d'ajouter un listener sur les medias
             handleLightboxListener()
         }
     })
@@ -59,30 +74,58 @@ const select = document.querySelector('#filters')
 select.addEventListener('change', async function () {
     const photographersCardsSection = document.querySelector(".cards");
     photographersCardsSection.innerHTML = ''
-    await displayMedias(mediaFiltered)
+    await displayData(mediaFiltered)
 })
 
 // HANDLE MODAL LIGHTBOX LISTENER
-function handleLightboxListener(likes) {
-    const mediaToCLick = document.querySelectorAll('.card')
-    mediaToCLick.forEach((el) => {
-        const img = el.querySelector('.card-img')
-        const icon = el.querySelector('.mdi')
+function handleLightboxListener() {
+
+    //Recuperation des cards
+    const medias = document.querySelectorAll('.card')
+
+    //Iteration sur les cards
+    medias.forEach((media) => {
+
+        //Pour chaque card je recupere l'image et l'icone
+        const img = media.querySelector('.card-img')
+        const icon = media.querySelector('.mdi')
+
+        //Ajout d'un event listener sur l'image
         img.addEventListener('click', function () {
-            cardTitle = el.querySelector('.card-title').textContent
-            displayLightbox(el)
+
+            //Assignation du titre de l'element cliqué a la variable cardTitle
+            cardTitle = media.querySelector('.card-title').textContent
+
+            //Affichage de l'element dans la modale
+            displayLightbox(media)
         })
+
+        //Ajout d'un event listener sur l'icone
         icon.addEventListener('click', function () {
-            getInitialLikes(el)
-            const favNumber = el.querySelector('.fav-number')
+
+            //Appel de la fonction de recuperer le nombre de likes initiaux
+            getInitialLikes(media)
+
+            //Recuperation de la div qui permet d'afficher les likes
+            const favNumber = media.querySelector('.fav-number')
+
+            //Convertion du nombre de likes present sur la card from string to integer
             dynamicLikes = convertToString(favNumber.innerText)
+
+            //Si nombre de likes initiaux est egal a celui affiché sur la card
             if(initialLikes === dynamicLikes) {
+
+                //Ajout d'un like
                 dynamicLikes += 1
+
+                //Suppresion de l'ancien element affichant les likes et ajout du nouveau comportant la nopuvelle valeur
                 const newLikesSpan = document.createElement('p')
                 newLikesSpan.classList.add('fav-number')
                 newLikesSpan.innerText = dynamicLikes
                 favNumber.remove()
-                el.querySelector('.fav').prepend(newLikesSpan)
+                media.querySelector('.fav').prepend(newLikesSpan)
+
+                //Appel de la foinction permettant d'incrementer le total de likes
                 setTotalLikes()
             }
         })
@@ -90,18 +133,20 @@ function handleLightboxListener(likes) {
 }
 
 function getPhotographer(media, photographers) {
-    const path = window.location.pathname;
-    const page = path.split("/").pop();
-    const idStringed = page.replace('.html', '').trim()
-    const idNumbered = convertToString(idStringed)
-    const photographersArrayFiltered = photographers.filter(el => el.id === idNumbered)
-    const mediaFiltered = media.filter(el => el.photographerId === idNumbered)
+    const queryString = window.location.search
+    const params = new URLSearchParams(queryString)
+    const id = params.get('id')
+    const photographersArrayFiltered = photographers.filter(el => el.id === parseInt(id, 10))
+    const mediaFiltered = media.filter(el => {
+        return el.photographerId === parseInt(id, 10)
+    })
     const photographer = photographersArrayFiltered[0]
     return {
         mediaFiltered,
         photographer
     }
 }
+
 async function insertCounterData(medias, photographer) {
     const count = document.querySelector('.count')
     const icon = document.querySelector('.icon-counter')
@@ -119,13 +164,18 @@ async function init() {
     mediaFiltered = getPhotographer(media, photographers).mediaFiltered
     photographer = getPhotographer(media, photographers).photographer
     insertHeaderData(photographer)
-    await displayMedias(mediaFiltered);
+    await displayData(mediaFiltered);
     await insertCounterData(mediaFiltered, photographer)
 }
 
 await init();
 
-// LIGHTBIX FUCNTIONS
+// LIKES FUNCTIONS
+function getInitialLikes(media) {
+    const mediaTitle = media.querySelector('.card-title').textContent
+    initialLikes =  mediaFiltered.filter(el => el.title === mediaTitle)[0].likes
+}
+
 function setTotalLikes() {
     total += 1
     const count = document.querySelector('.count')
@@ -137,81 +187,117 @@ function setTotalLikes() {
     counter.prepend(newCount)
 }
 
-// Get INITALLIKES
-function getInitialLikes(media) {
-    const mediaTitle = media.querySelector('.card-title').textContent
-    initialLikes =  mediaFiltered.filter(el => el.title === mediaTitle)[0].likes
-}
+// LIGHTBIX FUCNTIONS
+function displayLightbox(mediaCard) {
 
-function displayLightbox(media) {
-    console.log('MEDIA', media)
-    const id = document.getElementById('lightbox_modal')
-    console.log('id', id)
-    const img = id.querySelector('.card-img-lightbox')
-    const img2 = id.querySelector('.card-img')
-    console.log('img', img)
-    console.log('img2', img2)
-    // TODO: verifier bug double affichade l'image apres filtrage
-    if(!img || !img2) {
-        // Recuperation de la balise img depuis media et creation d'une copie
-        const elToDisplay = media.querySelector('.card-img')
-        const src = elToDisplay.src
-        const copiedElToDisplay = document.createElement('img')
-        copiedElToDisplay.setAttribute('src', src)
-        copiedElToDisplay.classList.add('card-img-lightbox')
+    //Recuperation de l'image depuis la card passée en argument
+    const img = mediaCard.querySelector('.card-img')
 
-        // Recupertaion de l'index
-        currentIndex = mediaFiltered.findIndex(el => el.title === cardTitle)
+    //Clonage de l'image ou video
+    const clonedImg = img.cloneNode()
 
-        // Recuperation des differents elements
-        const modal = document.querySelector('#lightbox_modal')
-        const modalContainer = document.createElement('div')
-        modal.style.display = 'block'
-        modal.classList.add('lightbox_modal')
-        modalContainer.classList.add('lightbox-container')
-        modal.append(modalContainer)
-
-        // Creation des elements de navigation
-        const next = document.createElement('span')
-        const previous = document.createElement('span')
-        const close = document.createElement('span')
-        next.classList.add('next')
-        previous.classList.add('previous')
-        close.classList.add('close')
-        next.innerText = 'Next'
-        previous.innerText = 'previous'
-        close.innerText = 'close'
-        next.addEventListener('click',function (){
-            nextMedia()
-        })
-        previous.addEventListener('click', function() {
-            previousMedia()
-        })
-        close.addEventListener('click', function() {
-            closeModal()
-        })
-
-        // Append
-        modalContainer.appendChild(copiedElToDisplay)
-        modalContainer.appendChild(next)
-        modalContainer.appendChild(close)
-        modalContainer.appendChild(previous)
+    //Si source element, clonage de l'element source et injection dans le clone de l'element video et ajout de 'controls'
+    if(mediaCard.querySelector('.source')) {
+        source = mediaCard.querySelector('.source')
+        const clonedSource = source.cloneNode()
+        clonedImg.appendChild(clonedSource)
+        clonedImg.controls = 'controls'
     }
+
+    //Recuperation de la modal
+    const modal = document.querySelector('#lightbox_modal')
+
+    //Récuperation du container de la modal
+    const modalContainer = document.querySelector('.lightbox-container')
+
+    //Si la modal contient déja un lightbox-container
+    if(modal.contains(modalContainer)) {
+        //Suppression du conatiner puis recréation d'un nouveau
+        modalContainer.remove()
+        newModalContainer = document.createElement('div')
+        modal.style.display = 'inline-flex'
+        modal.classList.add('center')
+        newModalContainer.classList.add('lightbox-container')
+        modal.append(newModalContainer)
+    } else {
+        //Sinon creation d'un nouveau
+        newModalContainer = document.createElement('div')
+        modal.style.display = 'inline-flex'
+        modal.classList.add('center')
+        newModalContainer.classList.add('lightbox-container')
+        modal.append(newModalContainer)
+    }
+
+
+    // Creation des elements de navigation et du titre et de l'image
+    const right = document.createElement('div')
+    const center = document.createElement('div')
+    const left = document.createElement('div')
+    const next = document.createElement('span')
+    const previous = document.createElement('span')
+    const title = document.createElement('span')
+    title.classList.add('title-img')
+    title.innerText = mediaCard.querySelector('.card-title').textContent
+    const close = document.createElement('span')
+    left.append(previous)
+    center.append(clonedImg)
+    center.append(title)
+    right.append(close)
+    right.append(next)
+    next.classList.add('next')
+    left.classList.add('left')
+    center.classList.add('center-image')
+    right.classList.add('right')
+    close.classList.add('close')
+    next.innerText = 'Next'
+    previous.innerText = 'previous'
+    close.innerText = 'close'
+    next.addEventListener('click',function (){
+        nextMedia()
+    })
+    previous.addEventListener('click', function() {
+        previousMedia()
+    })
+    close.addEventListener('click', function() {
+        closeModal()
+    })
+
+    // Append
+    newModalContainer.appendChild(left)
+    newModalContainer.appendChild(center)
+    newModalContainer.appendChild(right)
 }
 
-function  displayNewPicture(media) {
-    const el = document.querySelector('.lightbox-container')
-    const oldPic = el.querySelector('.card-img-lightbox')
-    el.removeChild(oldPic)
-    const picture = `.././assets/images/${media.image}`;
-    const image = document.createElement('img')
-    image.setAttribute("src", picture)
-    image.classList.add('card-img-lightbox')
-    el.appendChild(image)
+function displayNewPicture(media) {
+    let newTitle = document.createElement('span')
+    let content
+
+    //Récuperation du container de la modal
+    const modalContainer = document.querySelector('.lightbox-container')
+    const centerContainer = modalContainer.querySelector('.center-image')
+    const oldContent = modalContainer.querySelector('.card-img')
+    const oldTitleImg = modalContainer.querySelector('.title-img')
+    oldContent.remove()
+    oldTitleImg.remove()
+    cardTitle = media.title
+
+    if(media.image) {
+        content = mediaModel.getContentLightbox(media)
+
+    } else {
+        content = mediaModel.getContentLightbox(media, 'video')
+    }
+
+    //Ajout du media et de son titre dans le container
+    newTitle.innerText = media.title
+    newTitle.classList.add('title-img')
+    centerContainer.append(content)
+    centerContainer.append(newTitle)
 }
 
 function nextMedia() {
-    if (currentIndex === 9) {
+    currentIndex = mediaFiltered.findIndex(el => el.title === cardTitle)
+    if (currentIndex === mediaFiltered.length - 1) {
         currentIndex = 0
         const nextMedia = mediaFiltered[0]
         displayNewPicture(nextMedia)
@@ -223,6 +309,7 @@ function nextMedia() {
 }
 
 function previousMedia() {
+    currentIndex = mediaFiltered.findIndex(el => el.title === cardTitle)
     if (currentIndex === 0) {
         currentIndex = 9
         const nextMedia = mediaFiltered[mediaFiltered.length - 1]

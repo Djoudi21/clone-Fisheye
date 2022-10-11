@@ -24,11 +24,6 @@
 
 }
 
-.toto {
-    display: flex;
-    flex-direction: column;
-}
-
 .tagline {
     font-family: 'DM Sans';
     font-style: normal;

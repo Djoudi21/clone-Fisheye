@@ -1,15 +1,16 @@
 function photographerFactory(data) {
     const { name, portrait, city, country, tagline, price, id } = data;
     const picture = `assets/photographers/${portrait}`;
+    const origin = new URL(document.location).origin
+    const url = `${origin}/clone-Fisheye/photographer.html?id=${id}`
 
     function getUserCardDOM() {
         const article = document.createElement( 'article' );
         const a = document.createElement( 'a' );
-        a.href = `./photographers/${id}.html`;
+        a.href = url;
         const sectionContent = document.createElement('div')
         const sectionInfos = document.createElement('div')
         sectionContent.classList.add('photographer-img-container')
-        console.log('section', sectionContent)
         sectionInfos.classList.add('center')
         sectionInfos.classList.add('column')
         const img = document.createElement( 'img' );

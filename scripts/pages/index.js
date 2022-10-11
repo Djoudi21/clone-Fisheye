@@ -8,6 +8,10 @@ async function getPhotographers() {
     })
 }
 
+const logo = document.querySelector('.logo')
+logo.addEventListener('focus', function () {
+})
+
 async function displayData(photographers) {
     const photographersSection = document.querySelector(".photographer_section");
 
