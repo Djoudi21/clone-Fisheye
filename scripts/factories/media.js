@@ -20,12 +20,15 @@ export function mediaFactory(data) {
             content.appendChild(source)
             content.setAttribute('poster', poster)
             content.classList.add('card-img')
+            content.setAttribute('tabindex', '0')
+
         } else {
             // IMG SETTING
             content = document.createElement('img')
             const picture = `.././assets/images/${image}`;
             content.setAttribute("src", picture)
             content.classList.add('card-img')
+            content.setAttribute('tabindex', '0')
         }
 
         // FOOTER SETTING
@@ -41,6 +44,7 @@ export function mediaFactory(data) {
         // FAV SETTING
         const fav = document.createElement( 'div' );
         fav.classList.add('fav')
+
 
         // FAV SETTING
         const icon = setFavIcon()
@@ -80,6 +84,7 @@ export function mediaFactory(data) {
     function setFavIcon(color) {
         const favIcon = document.createElement( 'img' );
         favIcon.setAttribute('src', ".././assets/heart.png")
+        favIcon.setAttribute('tabindex', '0')
         favIcon.style.marginLeft = "15px"
         color === 'black' ? favIcon.classList.add('fav-icon__black') : favIcon.classList.add('fav-icon__red')
         return favIcon
