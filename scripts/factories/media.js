@@ -1,4 +1,3 @@
-
 export function mediaFactory(data) {
     const { image, title, likes, video } = data;
 
@@ -44,20 +43,13 @@ export function mediaFactory(data) {
         fav.classList.add('fav')
 
         // FAV SETTING
-        const favNumber = document.createElement( 'span' );
-        // const svg = document.createElement( 'svg' );
-        // const path = document.createElement( 'path' );
-        // svg.appendChild(path)
-        // const favIcon = document.querySelector('svg path');
-        // favIcon.setAttribute('d', mdiHeart)
-        // console.log('FAVIVO', favIcon)
-        favNumber.classList.add('fav-number')
-        favNumber.innerText = likes
+        const icon = setFavIcon()
+        const number = setFavNumber()
 
         footer.appendChild(label)
         footer.appendChild(fav)
-        fav.appendChild(favNumber)
-        // fav.appendChild(favIcon)
+        fav.appendChild(number)
+        fav.appendChild(icon)
         article.appendChild(content)
         article.appendChild(footer)
         return (article);
@@ -77,7 +69,6 @@ export function mediaFactory(data) {
             video.appendChild(source)
             return video
         } else {
-            console.log('titi')
             const picture = `.././assets/images/${media.image}`;
             const image = document.createElement('img')
             image.setAttribute("src", picture)
@@ -86,5 +77,21 @@ export function mediaFactory(data) {
         }
     }
 
-    return { likes, getMediaCardDOM, getContentLightbox }
+    function setFavIcon(color) {
+        const favIcon = document.createElement( 'img' );
+        favIcon.setAttribute('src', ".././assets/heart.png")
+        favIcon.style.marginLeft = "15px"
+        color === 'black' ? favIcon.classList.add('fav-icon__black') : favIcon.classList.add('fav-icon__red')
+        return favIcon
+    }
+
+    function setFavNumber() {
+        const favNumber = document.createElement( 'span' );
+        favNumber.classList.add('fav-number')
+        favNumber.innerText = likes
+        return favNumber
+    }
+
+
+    return { likes, getMediaCardDOM, getContentLightbox, setFavIcon }
 }

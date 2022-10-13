@@ -7,6 +7,13 @@
 @import url("lightbox-modal.css");
 @import url("likes-counter.css");
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
 body {
     font-family: "DM Sans", sans-serif;
     margin: 0;
@@ -43,6 +50,10 @@ h1 {
 .flex-col {
     display: flex;
     flex-direction: column;
+}
+
+.flex {
+    display: flex;
 }
 
 .column {

@@ -41,6 +41,12 @@
     color: #901C1C;
 }
 
+.fav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .fav-number {
     width: 22px;
     height: 31px;
@@ -51,8 +57,10 @@
     color: #901C1C;
 }
 
-.mdi-heart {
-    width: 17.5px;
-    height: 18.35px;
+.fav-icon__black {
     color: #901C1C;
+}
+
+.fav-icon__red {
+    filter: invert(13%) sepia(99%) saturate(2143%) hue-rotate(348deg) brightness(102%) contrast(91%);
 }

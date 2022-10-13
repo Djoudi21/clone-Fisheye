@@ -26,9 +26,9 @@
     height: 100%;
     width: 5%;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    flex-direction: column;
+    position: relative;
 }
 
 .center-image {
@@ -52,8 +52,15 @@
 
 /*}*/
 
-/*.close {*/
-/*}*/
+.close {
+    position: absolute;
+    top: 0;
+}
+
+.title-img {
+    filter: invert(13%) sepia(99%) saturate(2143%) hue-rotate(348deg) brightness(102%) contrast(91%);
+    margin-top: 10px;
+}
 
 .modal header {
     justify-content: space-between;

@@ -1,5 +1,11 @@
+#filters {
+    display: none;
+}
+
 .filter-section {
-    margin: 20px 100px;
+    margin: 40px 100px;
+    display: flex;
+    align-items: center;
 }
 
 .filter-section label {
@@ -10,3 +16,37 @@
     font-size: 18px;
     line-height: 23px;
 }
+
+.bottom-white {
+    border-bottom: 2px solid white;
+}
+
+.filter-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.filter {
+
+}
+
+.filter:hover {
+    opacity: 0.7;
+}
+
+/*.filter-element {*/
+/*    padding: 5px 0;*/
+/*    width: 80%;*/
+/*    text-align: left;*/
+/*}*/
+
+
+/*.filter-element {*/
+/*    padding: 5px 0;*/
+/*    width: 80%;*/
+/*    text-align: left;*/
+/*}*/

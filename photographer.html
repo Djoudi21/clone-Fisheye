@@ -27,12 +27,22 @@
         <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
         <div class="img-container"><img class="photographer-img" src="" alt="photographer-picture"></div>
     </section>
-    <section class="filter-section">
+    <section style="position: relative;" class="filter-section">
         <label for="filters">Trier par</label>
-        <select id="filters">
-            <option value="likes">Popularité</option>
-            <option value="title">Titre</option>
-        </select>
+        <div class="custom-select flex">
+            <select id="filters">
+                <option value="likes">Popularité</option>
+                <option value="title">Titre</option>
+            </select>
+        </div>
+        <div style="position: absolute; left: 90px;  top: 0; border-radius: 5px; color: white; margin-left: 5px; background-color: #901C1C; padding: 5px; display: flex; flex-direction: column">
+            <div class="filter" style=" padding-bottom: 5px">
+                <span>Popularité</span>
+                <img class="chevron-down"  src="./assets/chevron-down.png" alt="">
+                <img style="display: none" class="chevron-up"  src="./assets/chevron-up.png" alt="">
+            </div>
+            <div class="filter" style=" border-top: 2px solid white; display: none;">Titre</div>
+        </div>
     </section>
     <section class="cards"></section>
 </main>

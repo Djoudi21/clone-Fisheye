@@ -10,6 +10,7 @@ let initialLikes
 let newModalContainer
 let source
 let mediaModel
+let select
 
 async function getMedias() {
     return fetch('../../data/photographers.json').then(response => {
@@ -70,7 +71,7 @@ async function displayData(medias) {
 }
 
 // HANDLE SELECT LISTENER
-const select = document.querySelector('#filters')
+select = document.querySelector('#filters')
 select.addEventListener('change', async function () {
     const photographersCardsSection = document.querySelector(".cards");
     photographersCardsSection.innerHTML = ''
@@ -88,7 +89,7 @@ function handleLightboxListener() {
 
         //Pour chaque card je recupere l'image et l'icone
         const img = media.querySelector('.card-img')
-        const icon = media.querySelector('.mdi')
+        const icon = media.querySelector('.fav-icon__red')
 
         //Ajout d'un event listener sur l'image
         img.addEventListener('click', function () {
@@ -121,9 +122,11 @@ function handleLightboxListener() {
                 //Suppresion de l'ancien element affichant les likes et ajout du nouveau comportant la nopuvelle valeur
                 const newLikesSpan = document.createElement('p')
                 newLikesSpan.classList.add('fav-number')
+                newLikesSpan.style.margin = '0px'
                 newLikesSpan.innerText = dynamicLikes
                 favNumber.remove()
-                media.querySelector('.fav').prepend(newLikesSpan)
+                const newFavIcon = media.querySelector('.fav')
+                newFavIcon.prepend(newLikesSpan)
 
                 //Appel de la foinction permettant d'incrementer le total de likes
                 setTotalLikes()
@@ -149,13 +152,15 @@ function getPhotographer(media, photographers) {
 
 async function insertCounterData(medias, photographer) {
     const count = document.querySelector('.count')
-    const icon = document.querySelector('.icon-counter')
     const rate = document.querySelector('.rate-counter')
+    const iconContainer = document.querySelector('.icon-counter')
+    const icon = mediaModel.setFavIcon('black');
+    iconContainer.appendChild(icon)
+    iconContainer.classList.add('center')
     medias.forEach(media => {
         total = total+= media.likes
     })
     rate.innerText = `${photographer.price}$ / jour`
-    icon.innerText = 'icon'
     count.innerText = `${total}`
 }
 
@@ -165,6 +170,7 @@ async function init() {
     photographer = getPhotographer(media, photographers).photographer
     insertHeaderData(photographer)
     await displayData(mediaFiltered);
+    await displayFilterCustom()
     await insertCounterData(mediaFiltered, photographer)
 }
 
@@ -228,29 +234,38 @@ function displayLightbox(mediaCard) {
         modal.append(newModalContainer)
     }
 
-
     // Creation des elements de navigation et du titre et de l'image
     const right = document.createElement('div')
     const center = document.createElement('div')
     const left = document.createElement('div')
-    const next = document.createElement('span')
-    const previous = document.createElement('span')
+    const next = document.createElement('img')
+    next.setAttribute('src', '.././assets/chevron-right.png')
+    next.setAttribute('alt', "icone revenir a l'élement suivant")
+    next.classList.add('fav-icon__red')
+    const previous = document.createElement('img')
+    previous.setAttribute('src', '.././assets/chevron-left.png')
+    previous.setAttribute('alt', "icone revenir a l'élement précedent")
+    previous.classList.add('fav-icon__red')
+
     const title = document.createElement('span')
     title.classList.add('title-img')
     title.innerText = mediaCard.querySelector('.card-title').textContent
-    const close = document.createElement('span')
+    const close = document.createElement('img')
+    close.setAttribute('src', '.././assets/window-close.png')
+    close.setAttribute('alt', "icone fermer la modale")
+    close.classList.add('fav-icon__red')
+    close.classList.add('close')
+
     left.append(previous)
     center.append(clonedImg)
     center.append(title)
     right.append(close)
     right.append(next)
-    next.classList.add('next')
+    // next.classList.add('next')
     left.classList.add('left')
     center.classList.add('center-image')
     right.classList.add('right')
     close.classList.add('close')
-    next.innerText = 'Next'
-    previous.innerText = 'previous'
     close.innerText = 'close'
     next.addEventListener('click',function (){
         nextMedia()
@@ -326,6 +341,42 @@ function closeModal() {
     modal.style.display = "none";
 }
 
+function displayFilterCustom() {
+    const filters = document.querySelectorAll('.filter')
+    const iconUp = document.querySelector('.chevron-up')
+    const iconDown = document.querySelector('.chevron-down')
+    iconDown.addEventListener('click', function () {
+        filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
+        iconDown.style.display = 'none'
+        iconUp.style.display = 'block'
+        filters[0].style.display = 'flex'
+    })
+
+    iconUp.addEventListener('click', function () {
+        filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
+        iconUp.style.display = 'none'
+        iconDown.style.display = 'block'
+        filters[0].style.display = 'flex'
+    })
+
+    filters.forEach(filter => {
+        filter.addEventListener('click', async function () {
+            const photographersCardsSection = document.querySelector(".cards");
+            photographersCardsSection.innerHTML = ''
+            if(filter.innerHTML === 'Titre') {
+                const [...options] = document.querySelector('#filters').options
+                const titleOption = options.find(o => o.value === 'title')
+                titleOption.selected = true
+                await displayData(mediaFiltered)
+            } else {
+                const [...options] = document.querySelector('#filters').options
+                const likesOption = options.find(o => o.value === 'likes')
+                likesOption.selected = true
+                await displayData(mediaFiltered)
+            }
+        })
+    })
+}
 
 // UTILS
 function convertToString(str) {
