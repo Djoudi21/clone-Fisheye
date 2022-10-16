@@ -3,31 +3,27 @@
 <head>
     <link href="./css/style.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="./assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css">
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" property='stylesheet' />
     <title>Fisheye - photographe </title>
 </head>
 <body>
 <header>
-    <a href="./index.html" class="center">
+    <a tabindex="0" aria-label="link to home page" href="./index.html" class="logo-link">
         <img src="./assets/images/logo.png" class="logo"  alt="logo"/>
     </a>
 </header>
 <main id="main">
     <section class="photograph-header">
         <div class="infos-container">
-            <h3 class="name"></h3>
-            <div class="flex-col">
-                <span class="location"></span>
-                <span class="rate"></span>
-                <span class="tagline"></span>
-            </div>
+            <span class="location"></span>
+            <span class="tagline"></span>
         </div>
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
-        <div class="img-container"><img class="photographer-img" src="" alt="photographer-picture"></div>
+        <button aria-label="open contact form" class="contact_button" onclick="displayModal()">Contactez-moi</button>
+        <div class="img-container"></div>
     </section>
-    <section style="position: relative;" class="filter-section">
+    <section class="filter-section">
         <label for="filters">Trier par</label>
         <div class="custom-select flex">
             <select id="filters">
@@ -35,50 +31,47 @@
                 <option value="title">Titre</option>
             </select>
         </div>
-        <div tabindex="0" style="position: absolute; left: 90px;  top: 0; border-radius: 5px; color: white; margin-left: 5px; background-color: #901C1C; padding: 5px; display: flex; flex-direction: column">
-            <div class="filter" style=" padding-bottom: 5px">
-                <span tabindex="0">Popularité</span>
-                <img tabindex="0" class="chevron-down"  src="./assets/chevron-down.png" alt="">
-                <img tabindex="0" style="display: none" class="chevron-up"  src="./assets/chevron-up.png" alt="">
+        <div tabindex="0" class="custom-filter">
+            <div class="filter filter-likes">
+                <span tabindex="-1">Popularité</span>
+                <img tabindex="-1" class="chevron-down"  src="./assets/chevron-down.png" alt="chevron-icon">
+                <img tabindex="-1" class="chevron-up"  src="./assets/chevron-up.png" alt="chevron-icon">
             </div>
-            <div tabindex="0" class="filter" style=" border-top: 2px solid white; display: none;">Titre</div>
+            <div tabindex="-1" class="filter filter-title" >Titre</div>
         </div>
     </section>
     <section class="cards"></section>
 </main>
-<div id="contact_modal">
-    <div class="modal">
-        <header>
-            <h2>Contactez-moi</h2>
-            <img src="./assets/icons/close.svg" onclick="closeModal()" />
-        </header>
-        <form id="form" method="post">
-            <div>
-                <label>Prénom</label>
-                <input class="firstname" type="text" />
-                <label>Nom</label>
-                <input class="lastname" type="text" />
-                <label>Email</label>
-                <input class="email" type="text" />
-                <label>Votre message</label>
-                <textarea class="message" name="w3review" rows="10" cols="50"></textarea>
-            </div>
-            <button type="submit" class="contact_button">Envoyer</button>
-        </form>
-    </div>
-</div>
-<div id="lightbox_modal" class="lightbox_modal"></div>
-<div id="likes-counter">
+<section role="dialog" aria-label="contact form" id="contact_modal" class="modal">
+    <header class="contact_header" tabindex="0">
+        <h2>Contactez-moi</h2>
+        <img src="./assets/icons/close.svg" class="close-icon" alt="close-icon" tabindex="0" />
+    </header>
+    <form id="form" method="post">
+        <div>
+            <label for="firstname">Prénom</label>
+            <input aria-label="firstname" class="firstname" id="firstname" type="text" autofocus />
+            <label for="lastname">Nom</label>
+            <input aria-label="lastname" class="lastname" id="lastname" type="text" />
+            <label for="email">Email</label>
+            <input aria-label="email" class="email" id="email" type="text" />
+            <label for="message">Votre message</label>
+            <textarea aria-label="message" class="message" id="message"  rows="10" cols="50"></textarea>
+        </div>
+        <button aria-label="submit contact form" type="submit" class="contact_button">Envoyer</button>
+    </form>
+</section>
+<section role="dialog" aria-labelledby="lightbox modal modal" id="lightbox_modal" class="lightbox_modal"></section>
+<section aria-label="total likes and photographer daily rate" id="likes-counter">
     <div class="counter">
         <div class="count"></div>
         <div class="icon-counter"></div>
     </div>
     <div class="rate-counter"></div>
-</div>
+</section>
 <script src="./scripts/factories/photographer.js"></script>
 <script type="module" src="./scripts/factories/media.js"></script>
 <script type="module" src="./scripts/pages/photographer.js"></script>
 <script src="/scripts/utils/contactForm.js"></script>
-
 </body>
 </html>

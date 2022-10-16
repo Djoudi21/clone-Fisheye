@@ -4,7 +4,7 @@ export function mediaFactory(data) {
     let content
 
 
-    function getMediaCardDOM() {
+    function getMediaCardDOM(qualifiedName, value) {
         // CARD DIV SETTING
         const article = document.createElement( 'div' );
         article.classList.add('card')
@@ -13,20 +13,21 @@ export function mediaFactory(data) {
             //VIDEO SETTING
             content = document.createElement('video')
             const source = document.createElement('source')
-            const poster= `.././assets/film-and-vid.jpeg`
-            source.src = `.././assets/images/${video}`
+            source.src = `.././assets/images/${video}#t=0.5`
             source.type = `video/mp4`
             source.classList.add('source')
             content.appendChild(source)
-            content.setAttribute('poster', poster)
+            content.setAttribute('aria-label', `${title}`)
+            content.setAttribute('preload', 'metadata')
+            content.setAttribute('width', '50px')
             content.classList.add('card-img')
             content.setAttribute('tabindex', '0')
 
         } else {
             // IMG SETTING
             content = document.createElement('img')
-            const picture = `.././assets/images/${image}`;
-            content.setAttribute("src", picture)
+            content.src =  `.././assets/images/${image}`
+            content.setAttribute("alt", `${title}`)
             content.classList.add('card-img')
             content.setAttribute('tabindex', '0')
         }
@@ -96,7 +97,6 @@ export function mediaFactory(data) {
         favNumber.innerText = likes
         return favNumber
     }
-
 
     return { likes, getMediaCardDOM, getContentLightbox, setFavIcon }
 }

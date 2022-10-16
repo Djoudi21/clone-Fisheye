@@ -6,12 +6,13 @@
     margin: 40px 100px;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .filter-section label {
     width: 74px;
     height: 23px;
-    font-family: 'DM Sans';
+    font-family: 'DM Sans', sans-serif;
     font-weight: 700;
     font-size: 18px;
     line-height: 23px;
@@ -30,23 +31,46 @@
     padding: 0;
 }
 
-.filter {
+.filter-likes {
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+}
 
+.filter-title {
+    border-top: 2px solid white;
+    padding-top: 5px;
+    margin: 0 5px;
+    display: none;
 }
 
 .filter:hover {
     opacity: 0.7;
 }
 
-/*.filter-element {*/
-/*    padding: 5px 0;*/
-/*    width: 80%;*/
-/*    text-align: left;*/
-/*}*/
+.custom-filter {
+    position: absolute;
+    left: 90px;
+    top: 0;
+    border-radius: 5px;
+    color: white;
+    margin-left: 5px;
+    background-color: #901C1C;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
 
+.chevron-up {
+    display: block;
+    margin-left: 5px;
+    filter: invert(99%) sepia(3%) saturate(2%) hue-rotate(59deg) brightness(120%) contrast(100%);
+}
 
-/*.filter-element {*/
-/*    padding: 5px 0;*/
-/*    width: 80%;*/
-/*    text-align: left;*/
-/*}*/
+.chevron-down {
+    display: none;
+    margin-left: 5px;
+    filter: invert(99%) sepia(3%) saturate(2%) hue-rotate(59deg) brightness(120%) contrast(100%);
+}

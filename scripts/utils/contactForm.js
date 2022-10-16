@@ -1,76 +1,98 @@
-function displayModal() {
-    const modal = document.getElementById("contact_modal");
-	modal.style.display = "block";
-}
-
-function closeModal() {
-    const modal = document.getElementById("contact_modal");
-    modal.style.display = "none";
-}
-
-
-let newErrorMessage
 const regexEmail = new RegExp('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$');
+const modal = document.getElementById("contact_modal");
+const closeIcon = document.querySelector('.close-icon')
 const first = document.querySelector('.firstname')
-first.addEventListener('input', function () {
-    if(first.value.length > 2 && first.nextElementSibling.classList.contains('error-message')) {
-        first.nextElementSibling.remove()
-    }
-})
 const last = document.querySelector('.lastname')
-last.addEventListener('input', function () {
-    if(last.value.length > 2 && last.nextElementSibling.classList.contains('error-message')) {
-        last.nextElementSibling.remove()
-    }
-})
 const email = document.querySelector('.email')
-email.addEventListener('input', function () {
-    if(regexEmail.test(email.value) && email.nextElementSibling.classList.contains('error-message')) {
-        email.nextElementSibling.remove()
-    }
-})
 const message = document.querySelector('.message')
-message.addEventListener('input', function () {
-    if(message.value.length > 2 && message.nextElementSibling.classList.contains('error-message')) {
-        message.nextElementSibling.remove()
+const form = document.querySelector('#form')
+let activeEl
+
+
+function displayModal() {
+    activeEl = document.activeElement
+	modal.style.display = "block";
+    const firstnameInput = modal.querySelector('.firstname')
+    firstnameInput.focus()
+}
+
+closeIcon.addEventListener('keypress', function (event){
+    modal.style.display = "none";
+    activeEl.focus()
+})
+
+closeIcon.addEventListener('click', function (event){
+    modal.style.display = "none";
+})
+
+first.addEventListener('input', function () {
+    if(first.value.length > 2) {
+        first.style.border = ""
     }
 })
 
-const form = document.querySelector('#form')
-form.addEventListener('submit', function () {
+last.addEventListener('input', function () {
+    if(last.value.length > 2) {
+        last.style.border = ""
+    }
+})
+email.addEventListener('input', function () {
+    if(regexEmail.test(email.value)) {
+        email.style.border = ""
+    }
+})
+message.addEventListener('input', function () {
+    if (message.value.length > 2) {
+        message.style.border = ""
+    }
+})
+
+form.addEventListener('submit', function (event) {
     event.preventDefault()
     handleSubmit()
 })
 
-// FORM SUBMIT
+
 function handleSubmit() {
     checkFormValidation()
 }
 
 function checkFormValidation() {
     if(first.value.length < 2) {
-        createErrorMessage('Le prénom doit contenir au moins 2 caracteres', first)
+        first.style.border = "2px solid red"
+        first.placeholder = 'Le prénom doit contenir au moins 2 caracteres'
     }
+
     if(last.value.length < 2) {
-        createErrorMessage('Le nom de famille doit contenir au moins 2 caracteres', last)
+        last.style.border = "2px solid red"
+        last.placeholder = 'Le nom de famille doit contenir au moins 2 caracteres'
     }
 
     if( !regexEmail.test(email.value)) {
-        createErrorMessage('Lemail doit avoir un format valide', email)
+        email.style.border = "2px solid red"
+        email.placeholder = 'L\'email doit avoir un format valide, email'
     }
 
     if(message.value.length < 2) {
-        createErrorMessage('Lemessage doit contenir au moins 2 caracteres', message)
+        message.style.border = "2px solid red"
+        message.placeholder = 'Le message doit contenir au moins 2 caracteres'
     }
 
     if(first.value.length > 2 && last.value.length > 2 && regexEmail.test(email.value) && message.value.length > 2) {
         console.log('SUBMIT')
+        modal.style.display = "none";
+        resetForm()
+        activeEl.focus()
     }
 }
 
-function createErrorMessage(content, el) {
-    newErrorMessage = document.createElement('p')
-    newErrorMessage.classList.add("error-message");
-    newErrorMessage.innerText = content
-    el.after(newErrorMessage)
+function resetForm() {
+    first.value = ''
+    first.placeholder = ''
+    last.value = ''
+    last.placeholder = ''
+    email.value = ''
+    email.placeholder = ''
+    message.value = ''
+    message.placeholder = ''
 }

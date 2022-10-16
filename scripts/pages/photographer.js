@@ -1,5 +1,5 @@
 import {mediaFactory} from '../factories/media.js'
-
+let activeEl
 let mediaFiltered
 let photographer
 let cardTitle
@@ -11,6 +11,8 @@ let newModalContainer
 let source
 let mediaModel
 let select
+let isCustomSelectFocused = false
+
 
 async function getMedias() {
     return fetch('../../data/photographers.json').then(response => {
@@ -23,14 +25,22 @@ async function getMedias() {
 }
 
 function insertHeaderData(photographer) {
-    const nameEl = document.querySelector('.name')
     const taglineEl = document.querySelector('.tagline')
     const location = document.querySelector('.location')
-    const cardImg = document.querySelector('.photographer-img')
+    const infosContainer = document.querySelector('.infos-container')
+    const imgContainer = document.querySelector('.img-container')
+    const cardImg = document.createElement('img')
+    const nameEl = document.createElement('h2')
+    infosContainer.prepend(nameEl)
+    nameEl.classList.add('name')
     cardImg.src = `./assets/photographers/${photographer.portrait}`
+    cardImg.alt = `${photographer.title}`
+    cardImg.classList.add('photographer-img')
     location.innerText = `${photographer.city}/${photographer.country}`
     nameEl.innerText = photographer.name
+    nameEl.classList.add('name')
     taglineEl.innerText = photographer.tagline
+    imgContainer.appendChild(cardImg)
 }
 
 async function displayData(medias) {
@@ -56,8 +66,10 @@ async function displayData(medias) {
             //Fonction permettant d'ajouter un listener sur les medias
             handleLightboxListener()
         } else if (o.value === 'title' && o.selected === true) {
+
             //Tri par titre de façon ascending
             const titleAscendingMedia = medias.sort((a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))
+
             titleAscendingMedia.forEach((media) => {
                 const mediaModel = mediaFactory(media);
                 const card = mediaModel.getMediaCardDOM();
@@ -77,63 +89,6 @@ select.addEventListener('change', async function () {
     photographersCardsSection.innerHTML = ''
     await displayData(mediaFiltered)
 })
-
-// HANDLE MODAL LIGHTBOX LISTENER
-function handleLightboxListener() {
-
-    //Recuperation des cards
-    const medias = document.querySelectorAll('.card')
-
-    //Iteration sur les cards
-    medias.forEach((media) => {
-
-        //Pour chaque card je recupere l'image et l'icone
-        const img = media.querySelector('.card-img')
-        const icon = media.querySelector('.fav-icon__red')
-
-        //Ajout d'un event listener sur l'image
-        img.addEventListener('click', function () {
-
-            //Assignation du titre de l'element cliqué a la variable cardTitle
-            cardTitle = media.querySelector('.card-title').textContent
-
-            //Affichage de l'element dans la modale
-            displayLightbox(media)
-        })
-
-        //Ajout d'un event listener sur l'icone
-        icon.addEventListener('click', function () {
-
-            //Appel de la fonction de recuperer le nombre de likes initiaux
-            getInitialLikes(media)
-
-            //Recuperation de la div qui permet d'afficher les likes
-            const favNumber = media.querySelector('.fav-number')
-
-            //Convertion du nombre de likes present sur la card from string to integer
-            dynamicLikes = convertToString(favNumber.innerText)
-
-            //Si nombre de likes initiaux est egal a celui affiché sur la card
-            if(initialLikes === dynamicLikes) {
-
-                //Ajout d'un like
-                dynamicLikes += 1
-
-                //Suppresion de l'ancien element affichant les likes et ajout du nouveau comportant la nopuvelle valeur
-                const newLikesSpan = document.createElement('p')
-                newLikesSpan.classList.add('fav-number')
-                newLikesSpan.style.margin = '0px'
-                newLikesSpan.innerText = dynamicLikes
-                favNumber.remove()
-                const newFavIcon = media.querySelector('.fav')
-                newFavIcon.prepend(newLikesSpan)
-
-                //Appel de la foinction permettant d'incrementer le total de likes
-                setTotalLikes()
-            }
-        })
-    })
-}
 
 function getPhotographer(media, photographers) {
     const queryString = window.location.search
@@ -177,6 +132,37 @@ async function init() {
 await init();
 
 // LIKES FUNCTIONS
+function setLikesCounter(media) {
+
+    //Appel de la fonction de recuperer le nombre de likes initiaux
+    getInitialLikes(media)
+
+    //Recuperation de la div qui permet d'afficher les likes
+    const favNumber = media.querySelector('.fav-number')
+
+    //Convertion du nombre de likes present sur la card from string to integer
+    dynamicLikes = convertToString(favNumber.innerText)
+
+    //Si nombre de likes initiaux est egal a celui affiché sur la card
+    if(initialLikes === dynamicLikes) {
+
+        //Ajout d'un like
+        dynamicLikes += 1
+
+        //Suppresion de l'ancien element affichant les likes et ajout du nouveau comportant la nopuvelle valeur
+        const newLikesSpan = document.createElement('p')
+        newLikesSpan.classList.add('fav-number')
+        newLikesSpan.style.margin = '0px'
+        newLikesSpan.innerText = dynamicLikes
+        favNumber.remove()
+        const newFavIcon = media.querySelector('.fav')
+        newFavIcon.prepend(newLikesSpan)
+
+        //Appel de la foinction permettant d'incrementer le total de likes
+        setTotalLikes()
+    }
+}
+
 function getInitialLikes(media) {
     const mediaTitle = media.querySelector('.card-title').textContent
     initialLikes =  mediaFiltered.filter(el => el.title === mediaTitle)[0].likes
@@ -193,7 +179,65 @@ function setTotalLikes() {
     counter.prepend(newCount)
 }
 
-// LIGHTBIX FUCNTIONS
+// HANDLE MODAL LIGHTBOX LISTENER
+function handleLightboxListener() {
+
+    //Recuperation des cards
+    const medias = document.querySelectorAll('.card')
+
+    //Iteration sur les cards
+    medias.forEach((media) => {
+
+        //Pour chaque card je recupere l'image et l'icone
+        const img = media.querySelector('.card-img')
+        const icon = media.querySelector('.fav-icon__red')
+
+        //Ajout d'un event listener sur l'image
+        img.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            activeEl = document.activeElement
+
+            //Assignation du titre de l'element cliqué a la variable cardTitle
+            cardTitle = media.querySelector('.card-title').textContent
+
+            //Affichage de l'element dans la modale
+            displayLightbox(media)
+        })
+
+        img.addEventListener('keypress', function (event) {
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                activeEl = document.activeElement
+                //Assignation du titre de l'element cliqué a la variable cardTitle
+                cardTitle = media.querySelector('.card-title').textContent
+
+                //Affichage de l'element dans la modale
+                displayLightbox(media)
+            }
+        })
+
+
+        //Ajout d'un event listener sur l'icone
+        icon.addEventListener('click', function () {
+            setLikesCounter(media)
+        })
+
+        icon.addEventListener('keypress', function (event) {
+            // If the user presses the "Enter" key on the keyboard
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                setLikesCounter(media)
+            }
+        })
+
+    })
+}
+
+// LIGHTBOX FUNCTIONS
+
 function displayLightbox(mediaCard) {
 
     //Recuperation de l'image depuis la card passée en argument
@@ -216,6 +260,7 @@ function displayLightbox(mediaCard) {
     //Récuperation du container de la modal
     const modalContainer = document.querySelector('.lightbox-container')
 
+
     //Si la modal contient déja un lightbox-container
     if(modal.contains(modalContainer)) {
         //Suppression du conatiner puis recréation d'un nouveau
@@ -236,45 +281,80 @@ function displayLightbox(mediaCard) {
 
     // Creation des elements de navigation et du titre et de l'image
     const right = document.createElement('div')
+    right.setAttribute('tabindex', "0")
     const center = document.createElement('div')
+    center.setAttribute('tabindex', "0")
     const left = document.createElement('div')
+    left.setAttribute('tabindex', "0")
+
     const next = document.createElement('img')
     next.setAttribute('src', '.././assets/chevron-right.png')
     next.setAttribute('alt', "icone revenir a l'élement suivant")
+    next.setAttribute('tabindex', "0")
     next.classList.add('fav-icon__red')
+
     const previous = document.createElement('img')
     previous.setAttribute('src', '.././assets/chevron-left.png')
     previous.setAttribute('alt', "icone revenir a l'élement précedent")
+    previous.setAttribute('alt', "icone revenir a l'élement précedent")
+    previous.setAttribute('tabindex', "0")
     previous.classList.add('fav-icon__red')
 
-    const title = document.createElement('span')
-    title.classList.add('title-img')
-    title.innerText = mediaCard.querySelector('.card-title').textContent
     const close = document.createElement('img')
     close.setAttribute('src', '.././assets/window-close.png')
     close.setAttribute('alt', "icone fermer la modale")
+    close.setAttribute('tabindex', "0")
     close.classList.add('fav-icon__red')
     close.classList.add('close')
-
+    const title = document.createElement('span')
+    title.classList.add('title-img')
+    title.innerText = mediaCard.querySelector('.card-title').textContent
     left.append(previous)
     center.append(clonedImg)
     center.append(title)
     right.append(close)
     right.append(next)
-    // next.classList.add('next')
+
     left.classList.add('left')
     center.classList.add('center-image')
     right.classList.add('right')
     close.classList.add('close')
     close.innerText = 'close'
+
+    // EventListeners
     next.addEventListener('click',function (){
         nextMedia()
+    })
+    next.addEventListener('keypress',function (event){
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            nextMedia()
+        }
     })
     previous.addEventListener('click', function() {
         previousMedia()
     })
+    previous.addEventListener('keypress',function (event){
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            previousMedia()
+        }
+    })
     close.addEventListener('click', function() {
-        closeModal()
+        closeLightboxModal()
+    })
+    close.addEventListener('keypress',function (event){
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            closeLightboxModal()
+            activeEl.focus()
+        }
     })
 
     // Append
@@ -336,7 +416,7 @@ function previousMedia() {
     }
 }
 
-function closeModal() {
+function closeLightboxModal() {
     const modal = document.getElementById("lightbox_modal");
     modal.style.display = "none";
 }
@@ -345,34 +425,91 @@ function displayFilterCustom() {
     const filters = document.querySelectorAll('.filter')
     const iconUp = document.querySelector('.chevron-up')
     const iconDown = document.querySelector('.chevron-down')
+    const customFilter = document.querySelector('.custom-filter')
+
+    customFilter.addEventListener('keypress', function (event){
+        if(event.key === 'Enter') {
+            filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
+            filters[0].style.display = 'flex'
+            isCustomSelectFocused = !isCustomSelectFocused
+            filters[0].setAttribute('tabindex', "0")
+            filters[1].setAttribute('tabindex', "0")
+            iconDown.setAttribute('tabindex', "0")
+            iconUp.setAttribute('tabindex', "0")
+        }
+    })
+
     iconDown.addEventListener('click', function () {
-        filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
+        filters[0].style.display === 'block' ? filters[0].style.display = 'none' : filters[0].style.display = 'block'
         iconDown.style.display = 'none'
         iconUp.style.display = 'block'
         filters[0].style.display = 'flex'
     })
 
     iconUp.addEventListener('click', function () {
-        filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
+        filters[0].style.display === 'block' ? filters[0].style.display = 'none' : filters[0].style.display = 'block'
         iconUp.style.display = 'none'
         iconDown.style.display = 'block'
         filters[0].style.display = 'flex'
     })
 
+    iconDown.addEventListener('keypress', function (event) {
+        if(event.key === 'Enter') {
+            if(iconDown.style.display === 'block') {
+                iconUp.style.display = 'block'
+                iconDown.style.display = 'none'
+            } else {
+                iconDown.style.display = 'block'
+                iconUp.style.display = 'none'
+            }
+        }
+    })
+
+    iconUp.addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            if(iconUp.style.display === 'block') {
+                iconUp.style.display = 'none'
+                iconDown.style.display = 'block'
+            }  else {
+                iconUp.style.display = 'none'
+                iconDown.style.display = "block"
+            }
+        }
+    })
+
     filters.forEach(filter => {
+        const photographersCardsSection = document.querySelector(".cards");
         filter.addEventListener('click', async function () {
-            const photographersCardsSection = document.querySelector(".cards");
             photographersCardsSection.innerHTML = ''
             if(filter.innerHTML === 'Titre') {
                 const [...options] = document.querySelector('#filters').options
                 const titleOption = options.find(o => o.value === 'title')
                 titleOption.selected = true
+                photographersCardsSection.innerHTML = ''
                 await displayData(mediaFiltered)
             } else {
                 const [...options] = document.querySelector('#filters').options
                 const likesOption = options.find(o => o.value === 'likes')
                 likesOption.selected = true
+                photographersCardsSection.innerHTML = ''
                 await displayData(mediaFiltered)
+            }
+        })
+        filter.addEventListener('keypress', async function (event) {
+            if(event.key === 'Enter') {
+                if(filter.innerHTML === 'Titre') {
+                    const [...options] = document.querySelector('#filters').options
+                    const titleOption = options.find(o => o.value === 'title')
+                    titleOption.selected = true
+                    photographersCardsSection.innerHTML = ''
+                    await displayData(mediaFiltered)
+                } else {
+                    const [...options] = document.querySelector('#filters').options
+                    const likesOption = options.find(o => o.value === 'likes')
+                    likesOption.selected = true
+                    photographersCardsSection.innerHTML = ''
+                    await displayData(mediaFiltered)
+                }
             }
         })
     })
