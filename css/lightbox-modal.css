@@ -76,3 +76,10 @@
     font-weight: normal;
     text-align: center;
 }
+
+.toto {
+    background-image: url(".././assets/chevron-left.png");
+    display: block;
+    height:50px;
+    width:50px;
+}

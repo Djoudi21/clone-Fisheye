@@ -1,8 +1,8 @@
 function photographerFactory(data) {
     const { name, portrait, city, country, tagline, price, id } = data;
     const picture = `assets/photographers/${portrait}`;
-    const origin = new URL(document.location).origin
-    const url = `${origin}/clone-Fisheye/photographer.html?id=${id}`
+    // const origin = new URL(document.location).origin
+    const url = `./photographer.html?id=${id}`
 
     function getUserCardDOM() {
         const article = document.createElement( 'article' );

@@ -237,9 +237,11 @@ function handleLightboxListener() {
 }
 
 // LIGHTBOX FUNCTIONS
-
 function displayLightbox(mediaCard) {
-
+    const indexedElements = document.querySelectorAll("[tabindex='0']");
+    indexedElements.forEach(el => {
+        el.setAttribute('tabIndex', "-1")
+    })
     //Recuperation de l'image depuis la card passée en argument
     const img = mediaCard.querySelector('.card-img')
 
@@ -257,75 +259,66 @@ function displayLightbox(mediaCard) {
     //Recuperation de la modal
     const modal = document.querySelector('#lightbox_modal')
 
-    //Récuperation du container de la modal
+    //Recuperation du container de la modal
     const modalContainer = document.querySelector('.lightbox-container')
 
+    // Suppression du container si deja present dans la modal et creation d'un nouveau container
+    if(modal.contains(modalContainer)) modalContainer.remove()
+    newModalContainer = document.createElement('div')
+    modal.style.display = 'inline-flex'
+    modal.classList.add('center')
+    newModalContainer.classList.add('lightbox-container')
+    modal.append(newModalContainer)
 
-    //Si la modal contient déja un lightbox-container
-    if(modal.contains(modalContainer)) {
-        //Suppression du conatiner puis recréation d'un nouveau
-        modalContainer.remove()
-        newModalContainer = document.createElement('div')
-        modal.style.display = 'inline-flex'
-        modal.classList.add('center')
-        newModalContainer.classList.add('lightbox-container')
-        modal.append(newModalContainer)
-    } else {
-        //Sinon creation d'un nouveau
-        newModalContainer = document.createElement('div')
-        modal.style.display = 'inline-flex'
-        modal.classList.add('center')
-        newModalContainer.classList.add('lightbox-container')
-        modal.append(newModalContainer)
-    }
 
     // Creation des elements de navigation et du titre et de l'image
-    const right = document.createElement('div')
-    right.setAttribute('tabindex', "0")
-    const center = document.createElement('div')
-    center.setAttribute('tabindex', "0")
-    const left = document.createElement('div')
-    left.setAttribute('tabindex', "0")
+    const rightContainer = document.createElement('div')
+    const centerContainer = document.createElement('div')
+    const leftContainer = document.createElement('div')
 
-    const next = document.createElement('img')
-    next.setAttribute('src', '.././assets/chevron-right.png')
-    next.setAttribute('alt', "icone revenir a l'élement suivant")
-    next.setAttribute('tabindex', "0")
-    next.classList.add('fav-icon__red')
+    const nextImg = document.createElement('img')
+    nextImg.setAttribute('src', '.././assets/chevron-right.png')
+    nextImg.setAttribute('alt', "icone revenir a l'élement suivant")
+    nextImg.setAttribute('tabindex', "0")
+    nextImg.classList.add('fav-icon__red')
 
-    const previous = document.createElement('img')
-    previous.setAttribute('src', '.././assets/chevron-left.png')
-    previous.setAttribute('alt', "icone revenir a l'élement précedent")
-    previous.setAttribute('alt', "icone revenir a l'élement précedent")
-    previous.setAttribute('tabindex', "0")
-    previous.classList.add('fav-icon__red')
+    let link = document.createElement('div')
+    const previousImg = document.createElement('img')
+    link.appendChild(previousImg)
+    previousImg.setAttribute('src', '.././assets/chevron-left.png')
+    previousImg.setAttribute('alt', "icone revenir a l'élement précedent")
+    previousImg.setAttribute('tabindex', "0")
+    previousImg.classList.add('fav-icon__red')
+
 
     const close = document.createElement('img')
     close.setAttribute('src', '.././assets/window-close.png')
     close.setAttribute('alt', "icone fermer la modale")
-    close.setAttribute('tabindex', "0")
+    // close.setAttribute('tabindex', "0")
     close.classList.add('fav-icon__red')
     close.classList.add('close')
     const title = document.createElement('span')
     title.classList.add('title-img')
     title.innerText = mediaCard.querySelector('.card-title').textContent
-    left.append(previous)
-    center.append(clonedImg)
-    center.append(title)
-    right.append(close)
-    right.append(next)
 
-    left.classList.add('left')
-    center.classList.add('center-image')
-    right.classList.add('right')
+    // leftContainer.append(previousImg)
+    leftContainer.append(link)
+    centerContainer.append(clonedImg)
+    centerContainer.append(title)
+    rightContainer.append(close)
+    rightContainer.append(nextImg)
+
+    leftContainer.classList.add('left')
+    centerContainer.classList.add('center-image')
+    rightContainer.classList.add('right')
     close.classList.add('close')
     close.innerText = 'close'
 
     // EventListeners
-    next.addEventListener('click',function (){
+    nextImg.addEventListener('click',function (){
         nextMedia()
     })
-    next.addEventListener('keypress',function (event){
+    nextImg.addEventListener('keypress',function (event){
         // If the user presses the "Enter" key on the keyboard
         if (event.key === "Enter") {
             // Cancel the default action, if needed
@@ -333,10 +326,10 @@ function displayLightbox(mediaCard) {
             nextMedia()
         }
     })
-    previous.addEventListener('click', function() {
+    link.addEventListener('click', function() {
         previousMedia()
     })
-    previous.addEventListener('keypress',function (event){
+    link.addEventListener('keypress',function (event){
         // If the user presses the "Enter" key on the keyboard
         if (event.key === "Enter") {
             // Cancel the default action, if needed
@@ -358,9 +351,9 @@ function displayLightbox(mediaCard) {
     })
 
     // Append
-    newModalContainer.appendChild(left)
-    newModalContainer.appendChild(center)
-    newModalContainer.appendChild(right)
+    newModalContainer.appendChild(leftContainer)
+    newModalContainer.appendChild(centerContainer)
+    newModalContainer.appendChild(rightContainer)
 }
 
 function displayNewPicture(media) {

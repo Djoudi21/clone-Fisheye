@@ -79,7 +79,6 @@ function checkFormValidation() {
     }
 
     if(first.value.length > 2 && last.value.length > 2 && regexEmail.test(email.value) && message.value.length > 2) {
-        console.log('SUBMIT')
         modal.style.display = "none";
         resetForm()
         activeEl.focus()
