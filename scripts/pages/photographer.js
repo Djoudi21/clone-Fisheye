@@ -83,8 +83,6 @@ function insertHeaderData(photographer) {
 }
 
 async function displayData(medias) {
-    console.log('TUTU')
-
     // Récupération de la section pour afficher les cards
     const photographersCardsSection = document.querySelector(".cards");
 
