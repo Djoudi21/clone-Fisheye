@@ -4,7 +4,7 @@ export function mediaFactory(data) {
     let content
 
 
-    function getMediaCardDOM(qualifiedName, value) {
+    function getMediaCardDOM() {
         // CARD DIV SETTING
         const article = document.createElement( 'div' );
         article.classList.add('card')

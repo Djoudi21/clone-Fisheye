@@ -43,7 +43,6 @@
     border-top: 2px solid white;
     padding-top: 5px;
     margin: 0 5px;
-    display: none;
 }
 
 .filter:hover {
@@ -64,13 +63,19 @@
 }
 
 .chevron-up {
-    display: block;
     margin-left: 5px;
     filter: invert(99%) sepia(3%) saturate(2%) hue-rotate(59deg) brightness(120%) contrast(100%);
 }
 
 .chevron-down {
-    display: none;
     margin-left: 5px;
     filter: invert(99%) sepia(3%) saturate(2%) hue-rotate(59deg) brightness(120%) contrast(100%);
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
 }

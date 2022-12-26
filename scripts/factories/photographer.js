@@ -16,7 +16,6 @@ function photographerFactory(data) {
         const img = document.createElement( 'img' );
         img.setAttribute("src", picture)
         const h2 = document.createElement( 'h2' );
-        document.createElement('div')
         h2.textContent = name;
         const location = document.createElement('div')
         location.innerText = `${city}/${country}`

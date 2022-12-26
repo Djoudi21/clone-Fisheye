@@ -31,13 +31,19 @@
                 <option value="title">Titre</option>
             </select>
         </div>
-        <div tabindex="0" class="custom-filter">
+        <div class="custom-filter">
             <div class="filter filter-likes">
-                <span tabindex="-1">Popularité</span>
-                <img tabindex="-1" class="chevron-down"  src="./assets/chevron-down.png" alt="chevron-icon">
-                <img tabindex="-1" class="chevron-up"  src="./assets/chevron-up.png" alt="chevron-icon">
+                <div class="fifi">
+                    <span id="tutu" class="show">Popularité</span>
+                    <span id="toto" class="hide">Titre</span>
+                </div>
+                <img tabindex="0" class="chevron-down hide"  src="./assets/chevron-down.png" alt="chevron-icon">
+                <img tabindex="0" class="chevron-up show"  src="./assets/chevron-up.png" alt="chevron-icon">
             </div>
-            <div tabindex="-1" class="filter filter-title" >Titre</div>
+            <div tabindex="0" class="filter filter-title hide">
+                <span id="tete" class="hide">Popularité</span>
+                <span id="tata" class="show">Titre</span>
+            </div>
         </div>
     </section>
     <section class="cards"></section>

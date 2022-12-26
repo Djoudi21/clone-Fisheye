@@ -11,8 +11,47 @@ let newModalContainer
 let source
 let mediaModel
 let select
-let isCustomSelectFocused = false
 
+function getPhotographer(media, photographers) {
+    const queryString = window.location.search
+    const params = new URLSearchParams(queryString)
+    const id = params.get('id')
+    const photographersArrayFiltered = photographers.filter(el => el.id === parseInt(id, 10))
+    const mediaFiltered = media.filter(el => {
+        return el.photographerId === parseInt(id, 10)
+    })
+    const photographer = photographersArrayFiltered[0]
+    return {
+        mediaFiltered,
+        photographer
+    }
+}
+
+async function insertCounterData(medias, photographer) {
+    const count = document.querySelector('.count')
+    const rate = document.querySelector('.rate-counter')
+    const iconContainer = document.querySelector('.icon-counter')
+    const icon = mediaModel.setFavIcon('black');
+    iconContainer.appendChild(icon)
+    iconContainer.classList.add('center')
+    medias.forEach(media => {
+        total = total+= media.likes
+    })
+    rate.innerText = `${photographer.price}$ / jour`
+    count.innerText = `${total}`
+}
+
+async function init() {
+    const { media, photographers } = await getMedias();
+    mediaFiltered = getPhotographer(media, photographers).mediaFiltered
+    photographer = getPhotographer(media, photographers).photographer
+    insertHeaderData(photographer)
+    await displayData(mediaFiltered);
+    await displayFilterCustom()
+    await insertCounterData(mediaFiltered, photographer)
+}
+
+await init();
 
 async function getMedias() {
     return fetch('../../data/photographers.json').then(response => {
@@ -44,6 +83,8 @@ function insertHeaderData(photographer) {
 }
 
 async function displayData(medias) {
+    console.log('TUTU')
+
     // Récupération de la section pour afficher les cards
     const photographersCardsSection = document.querySelector(".cards");
 
@@ -90,46 +131,163 @@ select.addEventListener('change', async function () {
     await displayData(mediaFiltered)
 })
 
-function getPhotographer(media, photographers) {
-    const queryString = window.location.search
-    const params = new URLSearchParams(queryString)
-    const id = params.get('id')
-    const photographersArrayFiltered = photographers.filter(el => el.id === parseInt(id, 10))
-    const mediaFiltered = media.filter(el => {
-        return el.photographerId === parseInt(id, 10)
+async function displayFilterCustom() {
+    const iconUp = document.querySelector('.chevron-up')
+    const iconDown = document.querySelector('.chevron-down')
+    const titleFilter = document.querySelector(".filter-title")
+    const toto = document.getElementById('toto')
+    const tutu = document.getElementById('tutu')
+    const tete = document.getElementById('tete')
+    const tata = document.getElementById('tata')
+    const photographersCardsSection = document.querySelector(".cards");
+
+
+    iconUp.addEventListener('click', function (event) {
+        event.preventDefault()
+        iconUp.classList.remove("show")
+        iconUp.classList.add("hide")
+        iconDown.classList.remove("hide")
+        iconDown.classList.add("show")
+        titleFilter.classList.remove("hide")
+        titleFilter.classList.add("show")
     })
-    const photographer = photographersArrayFiltered[0]
-    return {
-        mediaFiltered,
-        photographer
-    }
-}
 
-async function insertCounterData(medias, photographer) {
-    const count = document.querySelector('.count')
-    const rate = document.querySelector('.rate-counter')
-    const iconContainer = document.querySelector('.icon-counter')
-    const icon = mediaModel.setFavIcon('black');
-    iconContainer.appendChild(icon)
-    iconContainer.classList.add('center')
-    medias.forEach(media => {
-        total = total+= media.likes
+    iconDown.addEventListener('click', function (event) {
+        event.preventDefault()
+        iconUp.classList.remove("hide")
+        iconUp.classList.add("show")
+        iconDown.classList.remove("show")
+        iconDown.classList.add("hide")
     })
-    rate.innerText = `${photographer.price}$ / jour`
-    count.innerText = `${total}`
+
+    titleFilter.addEventListener('click', function (event) {
+        event.preventDefault()
+        titleFilter.classList.remove("show")
+        titleFilter.classList.add("hide")
+        iconUp.classList.remove("hide")
+        iconUp.classList.add("show")
+        iconDown.classList.remove("show")
+        iconDown.classList.add("hide")
+
+        if (tutu.classList.contains('show')) {
+            tutu.classList.remove('show')
+            tutu.classList.add('hide')
+            toto.classList.remove('hide')
+            toto.classList.add('show')
+            tete.classList.remove('hide')
+            tete.classList.add('show')
+            tata.classList.remove('show')
+            tata.classList.add('hide')
+        } else {
+            tutu.classList.remove('hide')
+            tutu.classList.add('show')
+            toto.classList.remove('show')
+            toto.classList.add('hide')
+            tete.classList.remove('shwo')
+            tete.classList.add('hide')
+            tata.classList.remove('hide')
+            tata.classList.add('show')
+        }
+    })
+
+    iconUp.addEventListener('keypress', function (event) {
+        event.preventDefault()
+        if (event.key === 'Enter') {
+            if (iconUp.classList.contains(("show"))) {
+                iconUp.classList.remove("show")
+                iconUp.classList.add("hide")
+                iconDown.classList.remove("hide")
+                iconDown.classList.add("show")
+                titleFilter.classList.remove("hide")
+                titleFilter.classList.add("show")
+            } else {
+                iconUp.classList.remove("show")
+                iconUp.classList.add("hide")
+                iconDown.classList.remove("hide")
+                iconDown.classList.add("show")
+            }
+        }
+    })
+
+    iconDown.addEventListener('keypress', function (event) {
+        event.preventDefault()
+        if (event.key === 'Enter') {
+            if (iconDown.classList.contains(("show"))) {
+                iconUp.classList.remove("hide")
+                iconUp.classList.add("show")
+                iconDown.classList.remove("show")
+                iconDown.classList.add("hide")
+            } else {
+                iconDown.classList.remove("hide")
+                iconDown.classList.add("show")
+                iconUp.classList.remove("show")
+                iconUp.classList.add("hide")
+            }
+        }
+    })
+
+    titleFilter.addEventListener('keypress', function (event) {
+        event.preventDefault()
+        titleFilter.classList.remove("show")
+        titleFilter.classList.add("hide")
+        iconUp.classList.remove("hide")
+        iconUp.classList.add("show")
+        iconDown.style.display = ''
+        iconDown.classList.remove("show")
+        iconDown.classList.add("hide")
+        if (tutu.classList.contains('show')) {
+            tutu.classList.remove('show')
+            tutu.classList.add('hide')
+            toto.classList.remove('hide')
+            toto.classList.add('show')
+            tete.classList.remove('hide')
+            tete.classList.add('show')
+            tata.classList.remove('show')
+            tata.classList.add('hide')
+        } else {
+            tutu.classList.remove('hide')
+            tutu.classList.add('show')
+            toto.classList.remove('show')
+            toto.classList.add('hide')
+            tete.classList.remove('shwo')
+            tete.classList.add('hide')
+            tata.classList.remove('hide')
+            tata.classList.add('show')
+        }
+    })
+    titleFilter.addEventListener('click', async () => {
+        if (tutu.classList.contains("show")) {
+            const [...options] = document.querySelector('#filters').options
+            const titleOption = options.find(o => o.value === 'likes')
+            titleOption.selected = true
+            photographersCardsSection.innerHTML = ''
+            await displayData(mediaFiltered)
+        } else {
+            const [...options] = document.querySelector('#filters').options
+            const likesOption = options.find(o => o.value === 'title')
+            likesOption.selected = true
+            photographersCardsSection.innerHTML = ''
+            await displayData(mediaFiltered)
+        }
+    })
+
+    titleFilter.addEventListener('keypress', async () => {
+        if (tutu.classList.contains("show")) {
+            const [...options] = document.querySelector('#filters').options
+            const titleOption = options.find(o => o.value === 'likes')
+            titleOption.selected = true
+            photographersCardsSection.innerHTML = ''
+            await displayData(mediaFiltered)
+        } else {
+            const [...options] = document.querySelector('#filters').options
+            const likesOption = options.find(o => o.value === 'title')
+            likesOption.selected = true
+            photographersCardsSection.innerHTML = ''
+            await displayData(mediaFiltered)
+        }
+    })
 }
 
-async function init() {
-    const { media, photographers } = await getMedias();
-    mediaFiltered = getPhotographer(media, photographers).mediaFiltered
-    photographer = getPhotographer(media, photographers).photographer
-    insertHeaderData(photographer)
-    await displayData(mediaFiltered);
-    await displayFilterCustom()
-    await insertCounterData(mediaFiltered, photographer)
-}
-
-await init();
 
 // LIKES FUNCTIONS
 function setLikesCounter(media) {
@@ -294,7 +452,7 @@ function displayLightbox(mediaCard) {
     const close = document.createElement('img')
     close.setAttribute('src', '.././assets/window-close.png')
     close.setAttribute('alt', "icone fermer la modale")
-    // close.setAttribute('tabindex', "0")
+    close.setAttribute('tabindex', "0")
     close.classList.add('fav-icon__red')
     close.classList.add('close')
     const title = document.createElement('span')
@@ -412,100 +570,6 @@ function previousMedia() {
 function closeLightboxModal() {
     const modal = document.getElementById("lightbox_modal");
     modal.style.display = "none";
-}
-
-function displayFilterCustom() {
-    const filters = document.querySelectorAll('.filter')
-    const iconUp = document.querySelector('.chevron-up')
-    const iconDown = document.querySelector('.chevron-down')
-    const customFilter = document.querySelector('.custom-filter')
-
-    customFilter.addEventListener('keypress', function (event){
-        if(event.key === 'Enter') {
-            filters[1].style.display === 'block' ? filters[1].style.display = 'none' : filters[1].style.display = 'block'
-            filters[0].style.display = 'flex'
-            isCustomSelectFocused = !isCustomSelectFocused
-            filters[0].setAttribute('tabindex', "0")
-            filters[1].setAttribute('tabindex', "0")
-            iconDown.setAttribute('tabindex', "0")
-            iconUp.setAttribute('tabindex', "0")
-        }
-    })
-
-    iconDown.addEventListener('click', function () {
-        filters[0].style.display === 'block' ? filters[0].style.display = 'none' : filters[0].style.display = 'block'
-        iconDown.style.display = 'none'
-        iconUp.style.display = 'block'
-        filters[0].style.display = 'flex'
-    })
-
-    iconUp.addEventListener('click', function () {
-        filters[0].style.display === 'block' ? filters[0].style.display = 'none' : filters[0].style.display = 'block'
-        iconUp.style.display = 'none'
-        iconDown.style.display = 'block'
-        filters[0].style.display = 'flex'
-    })
-
-    iconDown.addEventListener('keypress', function (event) {
-        if(event.key === 'Enter') {
-            if(iconDown.style.display === 'block') {
-                iconUp.style.display = 'block'
-                iconDown.style.display = 'none'
-            } else {
-                iconDown.style.display = 'block'
-                iconUp.style.display = 'none'
-            }
-        }
-    })
-
-    iconUp.addEventListener('keypress', function (event) {
-        if (event.key === 'Enter') {
-            if(iconUp.style.display === 'block') {
-                iconUp.style.display = 'none'
-                iconDown.style.display = 'block'
-            }  else {
-                iconUp.style.display = 'none'
-                iconDown.style.display = "block"
-            }
-        }
-    })
-
-    filters.forEach(filter => {
-        const photographersCardsSection = document.querySelector(".cards");
-        filter.addEventListener('click', async function () {
-            photographersCardsSection.innerHTML = ''
-            if(filter.innerHTML === 'Titre') {
-                const [...options] = document.querySelector('#filters').options
-                const titleOption = options.find(o => o.value === 'title')
-                titleOption.selected = true
-                photographersCardsSection.innerHTML = ''
-                await displayData(mediaFiltered)
-            } else {
-                const [...options] = document.querySelector('#filters').options
-                const likesOption = options.find(o => o.value === 'likes')
-                likesOption.selected = true
-                photographersCardsSection.innerHTML = ''
-                await displayData(mediaFiltered)
-            }
-        })
-        filter.addEventListener('keypress', async function (event) {
-            if(event.key === 'Enter') {
-                if(filter.innerHTML === 'Titre') {
-                    const [...options] = document.querySelector('#filters').options
-                    const titleOption = options.find(o => o.value === 'title')
-                    titleOption.selected = true
-                    photographersCardsSection.innerHTML = ''
-                    await displayData(mediaFiltered)
-                } else {
-                    const [...options] = document.querySelector('#filters').options
-                    const likesOption = options.find(o => o.value === 'likes')
-                    likesOption.selected = true
-                    photographersCardsSection.innerHTML = ''
-                    await displayData(mediaFiltered)
-                }
-            }
-        })
-    })
 }
 
 // UTILS
