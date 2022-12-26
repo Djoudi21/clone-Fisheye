@@ -148,6 +148,7 @@ async function displayFilterCustom() {
         iconDown.classList.add("show")
         titleFilter.classList.remove("hide")
         titleFilter.classList.add("show")
+
     })
 
     iconDown.addEventListener('click', function (event) {
@@ -156,6 +157,8 @@ async function displayFilterCustom() {
         iconUp.classList.add("show")
         iconDown.classList.remove("show")
         iconDown.classList.add("hide")
+        titleFilter.classList.remove("show")
+        titleFilter.classList.add("hide")
     })
 
     titleFilter.addEventListener('click', function (event) {
@@ -166,7 +169,6 @@ async function displayFilterCustom() {
         iconUp.classList.add("show")
         iconDown.classList.remove("show")
         iconDown.classList.add("hide")
-
         if (tutu.classList.contains('show')) {
             tutu.classList.remove('show')
             tutu.classList.add('hide')
@@ -215,6 +217,8 @@ async function displayFilterCustom() {
                 iconUp.classList.add("show")
                 iconDown.classList.remove("show")
                 iconDown.classList.add("hide")
+                titleFilter.classList.remove("show")
+                titleFilter.classList.add("hide")
             } else {
                 iconDown.classList.remove("hide")
                 iconDown.classList.add("show")
